@@ -31,13 +31,13 @@ let ventes = [
 
 const svgns = "http://www.w3.org/2000/svg";
 let viewPortMaxUnitX = 1000;
-let viewPortMaxUnitY = 1000;
+let viewPortMaxUnitY = 500;
 let viewport = null;
 
 function init_UI() {
     insertViewPort("graphContainer");
     grille();
-    WriteMonths();
+    // WriteMonths();
     WriteMoney();
 }
 
@@ -48,57 +48,49 @@ function insertViewPort(containerId) {
     document.getElementById(containerId).appendChild(viewport);
 }
 
-function ToBet(pos){
-    pos.y = (1000 - pos.y);
-    return pos;
-}
-
-
 function grille(){
-    viewport.appendChild(text(ToBet({x : 400, y : 950}), "Ventes 2022", 0, 2, `rgb(0,0,0)`)); // name
-
-    for(let i = 1; i < 9; i++){
-        pos1 = { x: 200, y:i * 100};
-        pos2 = { x: 800, y:i * 100}
-        
-        for(let j = 0; j < 10; j++){
-            ypos = (pos1.y + (j * 10));
-            posj1 = { x:200, y: ypos }
-            posj2 = { x:800, y: ypos }
-            viewport.appendChild(line(ToBet (posj1),ToBet(posj2), "gray", 0.5));
+    viewport.appendChild(text({x:450,y:25}, "Ventes 2022"));
+    let echelle = 7000;
+    for(let i = 0; i < 8; i++){
+        pos1 = { x: 200, y:i * 50 + 50 };
+        pos2 = { x: 800, y:i * 50 + 50 };
+        if(i != 7){
+            for(let j = 1; j < 10; j++){
+                posj1 = { x:pos1.x, y:pos1.y + j * 5};
+                posj2 = { x:pos2.x, y:pos2.y + j * 5};
+                viewport.appendChild( line( posj1,posj2, "Gainsboro",0.5 ) );
+            }
         }
-        viewport.appendChild(text(ToBet({x:150, y:pos1.y}), `$ ${(i * 1000) - 1000}`));
-        viewport.appendChild(line(ToBet(pos1),ToBet(pos2), "gray", 1 ));
+        
+        
+        viewport.appendChild(text({x:150,y:pos1.y}, `$ ${(echelle)}`));
+        echelle -= 1000;
+        viewport.appendChild(line(pos1,pos2, "gray", 1 ));
     }
 }
 
 function WriteMonths(){
     let i = 200;
     mois.forEach( m => {
-        viewport.appendChild(text(ToBet({x:i , y:70}),m, 50, 1.2));
+        viewport.appendChild(text(FromBetter({x:i , y:70}),m, 50, 1.2));
         i+=50;
     });
 }
 
 function WriteMoney(){
-    let i = 215;
     couleur = "green";
-    ventes.forEach(vente => {
-        pos1 = ToBet({x:i, y:100});
-        pos2 = ToBet({x:i, y:(vente / 10) + 100});
-        if(pos2.y >= 800){
-            couleur = "red"
-        } else if(pos2.y >= 600){
-            couleur = "orange"
-        } else if(pos2.y >= 480){
-            couleur = "yellow"
-        }
-        viewport.appendChild(line(pos1,pos2,couleur,35));
-        viewport.appendChild(text({x:pos2.x - 15, y:pos2.y - 5},vente))
-        i+=50;
+    for(let i = 0; i < ventes.length; i++){
+        pos = {x:200 + (i * 51.7), y:(350 - ventes[i]/20) + 50};
         couleur = "green";
-    });
+        if(pos.y >= 340){
+            couleur = "red";
+        }else if(pos.y >= 300){
+            couleur = "orange"
+        }
+        viewport.appendChild(rect(pos,30,(ventes[i]/20),couleur));
+    }
 }
+
 
 
 function line(pos1, pos2, stroke = "black", strokeWidth = 1) {
@@ -115,7 +107,7 @@ function line(pos1, pos2, stroke = "black", strokeWidth = 1) {
 function rect(pos, width, height, fill = "white", stroke = "black", strokeWidth = 1) {
     let rect = document.createElementNS(svgns, "rect");
     rect.setAttribute("x", pos.x);
-    rect.setAttribute("y", pos.y);
+    rect.setAttribute("y", pos.y );
     rect.setAttribute("width", width);
     console.log(height);
     rect.setAttribute("height", height);
