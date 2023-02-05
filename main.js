@@ -37,7 +37,7 @@ let viewport = null;
 function init_UI() {
     insertViewPort("graphContainer");
     grille();
-    // WriteMonths();
+    WriteMonths();
     WriteMoney();
 }
 
@@ -72,7 +72,7 @@ function grille(){
 function WriteMonths(){
     let i = 200;
     mois.forEach( m => {
-        viewport.appendChild(text(FromBetter({x:i , y:70}),m, 50, 1.2));
+        viewport.appendChild(text({x:i , y:415}, m, 50, 1.2));
         i+=50;
     });
 }
@@ -82,11 +82,15 @@ function WriteMoney(){
     for(let i = 0; i < ventes.length; i++){
         pos = {x:200 + (i * 51.7), y:(350 - ventes[i]/20) + 50};
         couleur = "green";
+
         if(pos.y >= 340){
             couleur = "red";
-        }else if(pos.y >= 300){
+        }else if(pos.y >= 250){
             couleur = "orange"
+        }else if(pos.y >= 190){
+            couleur = "yellow"
         }
+        viewport.appendChild(text({x:pos.x - 5, y:pos.y - 5},`$${ventes[i]}`))
         viewport.appendChild(rect(pos,30,(ventes[i]/20),couleur));
     }
 }
@@ -109,7 +113,6 @@ function rect(pos, width, height, fill = "white", stroke = "black", strokeWidth 
     rect.setAttribute("x", pos.x);
     rect.setAttribute("y", pos.y );
     rect.setAttribute("width", width);
-    console.log(height);
     rect.setAttribute("height", height);
     rect.setAttribute("fill", fill);
     rect.setAttribute("stroke", stroke);
